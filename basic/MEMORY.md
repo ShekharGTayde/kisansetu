@@ -118,6 +118,7 @@ Planned models: User (role farmer|buyer), RequirementListing, Offer, Negotiation
 | Purpose | Command |
 |---|---|
 | Install | `npm install` in root, `client/`, and `server/` |
+| Run both (concurrent) | `npm run dev` (from root - runs server on :5000 and client on :5173) |
 | Run server | `npm run dev:server` or `cd server && npm run dev` |
 | Run client | `npm run dev:client` or `cd client && npm run dev` |
 | Lint | `npm run lint` (runs both server and client linters) |
