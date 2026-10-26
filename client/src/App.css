@@ -1,0 +1,9 @@
+/* KisanSetu Custom Styles */
+@keyframes pulseSubtle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(0.95); }
+}
+
+.pulse-dot {
+  animation: pulseSubtle 2.5s infinite ease-in-out;
+}

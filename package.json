@@ -1,0 +1,18 @@
+{
+  "name": "kisansetu-agripact",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev:client": "npm --prefix client run dev",
+    "dev:server": "npm --prefix server run dev",
+    "build:client": "npm --prefix client run build",
+    "lint:client": "npm --prefix client run lint",
+    "lint:server": "npm --prefix server run lint",
+    "lint": "npm run lint:server && npm run lint:client",
+    "test:server": "npm --prefix server run test",
+    "test": "npm run test:server"
+  },
+  "dependencies": {
+    "motion": "^14.6.0"
+  }
+}
