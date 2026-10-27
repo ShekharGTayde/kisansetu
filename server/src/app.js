@@ -3,6 +3,7 @@ import cors from 'cors'
 import helmet from 'helmet'
 import morgan from 'morgan'
 import { sendSuccess, sendError } from './utils/response.js'
+import authRoutes from './routes/auth.routes.js'
 
 const app = express()
 
@@ -23,6 +24,9 @@ app.get('/api/v1/health', (req, res) => {
     timestamp: new Date().toISOString(),
   })
 })
+
+// Authentication API
+app.use('/api/v1/auth', authRoutes)
 
 // Central 404 handler
 app.use((req, res) => {

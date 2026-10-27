@@ -2,7 +2,7 @@
 
 Living project memory. **Read this instead of re-analyzing the project.** Update it at the end of every task (see rules at the bottom). Keep it short, factual, and current; edit entries in place rather than appending duplicates.
 
-Last updated: 2026-10-27 | After task: T-003 | Updated by: agent
+Last updated: 2026-10-27 | After task: T-004 | Updated by: agent
 
 ---
 
@@ -20,10 +20,10 @@ Last updated: 2026-10-27 | After task: T-003 | Updated by: agent
 
 | Item | Value |
 |---|---|
-| Current task | T-004: Register and login API |
-| Last completed task | T-003: User model |
-| Tasks done | 3 / 23 |
-| Repo state | User model created with farmer/buyer roles, safe JSON transformation, bcrypt hashing, and test suite |
+| Current task | T-005: Auth and role middleware |
+| Last completed task | T-004: Register and login API |
+| Tasks done | 4 / 23 |
+| Repo state | Role-based Auth API (/api/v1/auth) implemented with Zod validation, JWT generation, and full Supertest coverage |
 | Known broken / failing | none |
 
 ## 3. Repo Map (record real paths as they are created)
@@ -41,13 +41,21 @@ server/
   src/
     config/
       db.js               -> Mongoose connection manager with fail-fast options
+    controllers/
+      auth.controller.js  -> Register, login, getMe, and logout handlers
+    middleware/
+      validate.js         -> Zod schema validation middleware
     models/
       User.js             -> User schema with farmer/buyer roles, extras, bcrypt hashing
+    routes/
+      auth.routes.js      -> Express router for /api/v1/auth
     utils/
       response.js         -> Standard API envelope helpers (sendSuccess, sendError)
+      token.js            -> JWT token sign and verify helpers
     app.js                -> Express app with helmet, cors, standard envelope, central 404 and error handlers
     server.js             -> MongoDB connector and Port 5000 listener
   tests/
+    auth.test.js          -> Auth endpoints (register, login, me, logout) Supertest suite
     db.test.js            -> MongoMemoryServer connect/disconnect unit tests
     health.test.js        -> Jest + Supertest health route, 404 & malformed JSON envelope tests
     user.model.test.js    -> User schema validation, unique email & role unit tests
@@ -62,10 +70,15 @@ Key files (agent: add one line per important file; remove if deleted):
 | `client/src/App.jsx` | Landing hero, floating navbar, requirement browser, and contract flow |
 | `client/src/index.css` | Biophilic design tokens and typography |
 | `server/src/config/db.js` | MongoDB connection with fail-fast config |
+| `server/src/controllers/auth.controller.js` | Authentication handlers (register, login, getMe, logout) |
+| `server/src/middleware/validate.js` | Zod schema validation middleware |
 | `server/src/models/User.js` | User schema with farmer/buyer roles and secure password hashing |
+| `server/src/routes/auth.routes.js` | Auth endpoints router |
 | `server/src/utils/response.js` | Standard API response helpers |
+| `server/src/utils/token.js` | JWT token signer and verifier |
 | `server/src/app.js` | Express app configuration and error handling envelope |
 | `server/src/server.js` | Backend server bootstrapper with MongoDB connection |
+| `server/tests/auth.test.js` | Auth integration tests |
 | `server/tests/db.test.js` | Database connect and disconnect tests |
 | `server/tests/health.test.js` | Health check & envelope unit tests |
 | `server/tests/user.model.test.js` | User model unit test suite |
@@ -110,6 +123,10 @@ Planned models: User (role farmer|buyer), RequirementListing, Offer, Negotiation
 | Method | Path | Roles | Purpose | Task |
 |---|---|---|---|---|
 | GET | /api/v1/health | public | health check | T-001 |
+| POST | /api/v1/auth/register | public | Register farmer or buyer | T-004 |
+| POST | /api/v1/auth/login | public | Login with email & password | T-004 |
+| GET | /api/v1/auth/me | authenticated | Fetch current authenticated user | T-004 |
+| POST | /api/v1/auth/logout | public | Logout user session | T-004 |
 
 ## 8. Frontend Registry (pages/routes as built)
 
@@ -156,6 +173,7 @@ Planned models: User (role farmer|buyer), RequirementListing, Offer, Negotiation
 
 | Date | Task | Summary |
 |---|---|---|
+| 2026-10-27 | T-004 | Implemented /api/v1/auth routes (register, login, me, logout), Zod input validation schemas, JWT token generation with role payload, duplicate email check, and comprehensive Supertest suite. |
 | 2026-10-27 | T-003 | Created User Mongoose model with role-based schemas (farmer/buyer), farmDetails & businessName extras, bcrypt password hashing, safe toJSON exclusions, and unit test suite. Recorded integer paise decision for money storage. |
 | 2026-10-27 | T-002 | Implemented Mongoose database connection manager with fail-fast options, standard response envelope helpers, central error & 404 handlers, malformed JSON body handling, and test suite with Jest, Supertest & mongodb-memory-server. |
 | 2026-10-26 | T-001 | Initialized client and server scaffolding, verified tooling and scripts. Implemented exact organic biophilic landing UI matching the reference image with Cormorant Garamond serif, floating pill navbar, misty hills backdrop, and verified health API with Jest & Supertest. Both lint and tests pass cleanly. |

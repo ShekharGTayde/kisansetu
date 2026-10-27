@@ -8,9 +8,9 @@
 
 | Field | Value |
 |---|---|
-| Current task | T-004: Register and login API |
-| Last completed | T-003: User model |
-| Completed / Total | 3 / 23 |
+| Current task | T-005: Auth and role middleware |
+| Last completed | T-004: Register and login API |
+| Completed / Total | 4 / 23 |
 | Phase in progress | Phase 1: Role-based Authentication |
 | Blocked tasks | none |
 
@@ -71,7 +71,7 @@ server/tests/
   - Do: `User` schema: `name`, `email` (unique), `phone`, `passwordHash`, `role` (`farmer` | `buyer`), `location` (district/state text), role extras (`farmDetails` for farmer: crops grown; `businessName` for buyer), timestamps. Never return `passwordHash`.
   - Verify: model tests for required fields, unique email, invalid role rejected.
 
-- [ ] **T-004: Register and login API**
+- [x] **T-004: Register and login API**
   - Depends on: T-003
   - Do: `POST /auth/register` (role chosen at signup, validation), `POST /auth/login`, `GET /auth/me`, `POST /auth/logout`. bcrypt hashing; JWT access token (add refresh only if simple). Role stored in token.
   - Verify: tests for duplicate email, wrong password, invalid role, `me` with and without token.
@@ -190,6 +190,7 @@ server/tests/
 ---
 
 ## Progress Log
+2026-10-27 | T-004 | Implemented /api/v1/auth routes (register, login, me, logout), Zod input validation, JWT token creation with role payload, duplicate email check, and comprehensive Supertest suite.
 2026-10-27 | T-003 | Created User Mongoose model with role-based schemas (farmer/buyer), farmDetails & businessName extras, bcrypt password hashing, safe toJSON exclusions, and unit test suite.
 2026-10-27 | T-002 | Implemented Mongoose connection with fail-fast config, standard response envelope helpers, central error & 404 handlers, malformed JSON body handling, and test suite with Jest, Supertest & mongodb-memory-server.
 2026-10-26 | T-001 | Verified client (React+Vite) & server (Express). Created exact organic biophilic theme with Cormorant Garamond italic serif & Plus Jakarta Sans, floating pill navbar, Jest & ESLint configs. Verified lint and test passing.
