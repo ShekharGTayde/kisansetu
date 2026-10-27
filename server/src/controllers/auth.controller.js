@@ -1,5 +1,5 @@
 import User from '../models/User.js'
-import { generateToken, verifyToken } from '../utils/token.js'
+import { generateToken } from '../utils/token.js'
 import { sendSuccess, sendError } from '../utils/response.js'
 
 export const register = async (req, res, next) => {
@@ -76,20 +76,7 @@ export const login = async (req, res, next) => {
 
 export const getMe = async (req, res, next) => {
   try {
-    const authHeader = req.headers.authorization
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return sendError(res, 'UNAUTHORIZED', 'Authentication token missing or invalid', 401)
-    }
-
-    const token = authHeader.split(' ')[1]
-    let decoded
-    try {
-      decoded = verifyToken(token)
-    } catch {
-      return sendError(res, 'UNAUTHORIZED', 'Invalid or expired authentication token', 401)
-    }
-
-    const user = await User.findById(decoded.id)
+    const user = await User.findById(req.user.id)
     if (!user) {
       return sendError(res, 'NOT_FOUND', 'User no longer exists', 404)
     }

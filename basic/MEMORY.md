@@ -2,7 +2,7 @@
 
 Living project memory. **Read this instead of re-analyzing the project.** Update it at the end of every task (see rules at the bottom). Keep it short, factual, and current; edit entries in place rather than appending duplicates.
 
-Last updated: 2026-10-27 | After task: T-004 | Updated by: agent
+Last updated: 2026-10-27 | After task: T-005 | Updated by: agent
 
 ---
 
@@ -20,10 +20,10 @@ Last updated: 2026-10-27 | After task: T-004 | Updated by: agent
 
 | Item | Value |
 |---|---|
-| Current task | T-005: Auth and role middleware |
-| Last completed task | T-004: Register and login API |
-| Tasks done | 4 / 23 |
-| Repo state | Role-based Auth API (/api/v1/auth) implemented with Zod validation, JWT generation, and full Supertest coverage |
+| Current task | T-006: Frontend foundation |
+| Last completed task | T-005: Auth and role middleware |
+| Tasks done | 5 / 23 |
+| Repo state | JWT authenticate and role-based authorize middleware created with 401/403 verification and test suite passing |
 | Known broken / failing | none |
 
 ## 3. Repo Map (record real paths as they are created)
@@ -44,6 +44,7 @@ server/
     controllers/
       auth.controller.js  -> Register, login, getMe, and logout handlers
     middleware/
+      auth.js             -> JWT authenticate, authorize('farmer'|'buyer'), isOwner helpers
       validate.js         -> Zod schema validation middleware
     models/
       User.js             -> User schema with farmer/buyer roles, extras, bcrypt hashing
@@ -58,6 +59,7 @@ server/
     auth.test.js          -> Auth endpoints (register, login, me, logout) Supertest suite
     db.test.js            -> MongoMemoryServer connect/disconnect unit tests
     health.test.js        -> Jest + Supertest health route, 404 & malformed JSON envelope tests
+    middleware.test.js    -> RBAC and authenticate middleware Supertest suite
     user.model.test.js    -> User schema validation, unique email & role unit tests
   eslint.config.js        -> ESLint 9 flat configuration
   .env.example            -> Environment variables template
@@ -71,6 +73,7 @@ Key files (agent: add one line per important file; remove if deleted):
 | `client/src/index.css` | Biophilic design tokens and typography |
 | `server/src/config/db.js` | MongoDB connection with fail-fast config |
 | `server/src/controllers/auth.controller.js` | Authentication handlers (register, login, getMe, logout) |
+| `server/src/middleware/auth.js` | JWT authenticate, authorize, and isOwner RBAC middleware |
 | `server/src/middleware/validate.js` | Zod schema validation middleware |
 | `server/src/models/User.js` | User schema with farmer/buyer roles and secure password hashing |
 | `server/src/routes/auth.routes.js` | Auth endpoints router |
@@ -81,6 +84,7 @@ Key files (agent: add one line per important file; remove if deleted):
 | `server/tests/auth.test.js` | Auth integration tests |
 | `server/tests/db.test.js` | Database connect and disconnect tests |
 | `server/tests/health.test.js` | Health check & envelope unit tests |
+| `server/tests/middleware.test.js` | RBAC and authenticate middleware tests |
 | `server/tests/user.model.test.js` | User model unit test suite |
 
 ## 4. Conventions (follow these; do not re-decide)
@@ -173,6 +177,7 @@ Planned models: User (role farmer|buyer), RequirementListing, Offer, Negotiation
 
 | Date | Task | Summary |
 |---|---|---|
+| 2026-10-27 | T-005 | Built JWT authenticate and role-based authorize('farmer'|'buyer') middleware with isOwner helper and verified 401/403 access control with Supertest. |
 | 2026-10-27 | T-004 | Implemented /api/v1/auth routes (register, login, me, logout), Zod input validation schemas, JWT token generation with role payload, duplicate email check, and comprehensive Supertest suite. |
 | 2026-10-27 | T-003 | Created User Mongoose model with role-based schemas (farmer/buyer), farmDetails & businessName extras, bcrypt password hashing, safe toJSON exclusions, and unit test suite. Recorded integer paise decision for money storage. |
 | 2026-10-27 | T-002 | Implemented Mongoose database connection manager with fail-fast options, standard response envelope helpers, central error & 404 handlers, malformed JSON body handling, and test suite with Jest, Supertest & mongodb-memory-server. |

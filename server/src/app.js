@@ -4,6 +4,7 @@ import helmet from 'helmet'
 import morgan from 'morgan'
 import { sendSuccess, sendError } from './utils/response.js'
 import authRoutes from './routes/auth.routes.js'
+import { authenticate, authorize } from './middleware/auth.js'
 
 const app = express()
 
@@ -27,6 +28,15 @@ app.get('/api/v1/health', (req, res) => {
 
 // Authentication API
 app.use('/api/v1/auth', authRoutes)
+
+// Role middleware verification endpoints
+app.get('/api/v1/test/farmer-only', authenticate, authorize('farmer'), (req, res) => {
+  sendSuccess(res, { message: 'Farmer access granted', user: req.user })
+})
+
+app.get('/api/v1/test/buyer-only', authenticate, authorize('buyer'), (req, res) => {
+  sendSuccess(res, { message: 'Buyer access granted', user: req.user })
+})
 
 // Central 404 handler
 app.use((req, res) => {
