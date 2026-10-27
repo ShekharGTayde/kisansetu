@@ -2,7 +2,7 @@
 
 Living project memory. **Read this instead of re-analyzing the project.** Update it at the end of every task (see rules at the bottom). Keep it short, factual, and current; edit entries in place rather than appending duplicates.
 
-Last updated: 2026-10-27 | After task: T-002 | Updated by: agent
+Last updated: 2026-10-27 | After task: T-003 | Updated by: agent
 
 ---
 
@@ -20,10 +20,10 @@ Last updated: 2026-10-27 | After task: T-002 | Updated by: agent
 
 | Item | Value |
 |---|---|
-| Current task | T-003: User model |
-| Last completed task | T-002: Server skeleton and database |
-| Tasks done | 2 / 23 |
-| Repo state | Server skeleton connected with Mongoose fail-fast config, response helpers, central error & 404 handlers, test suite passing |
+| Current task | T-004: Register and login API |
+| Last completed task | T-003: User model |
+| Tasks done | 3 / 23 |
+| Repo state | User model created with farmer/buyer roles, safe JSON transformation, bcrypt hashing, and test suite |
 | Known broken / failing | none |
 
 ## 3. Repo Map (record real paths as they are created)
@@ -41,6 +41,8 @@ server/
   src/
     config/
       db.js               -> Mongoose connection manager with fail-fast options
+    models/
+      User.js             -> User schema with farmer/buyer roles, extras, bcrypt hashing
     utils/
       response.js         -> Standard API envelope helpers (sendSuccess, sendError)
     app.js                -> Express app with helmet, cors, standard envelope, central 404 and error handlers
@@ -48,6 +50,7 @@ server/
   tests/
     db.test.js            -> MongoMemoryServer connect/disconnect unit tests
     health.test.js        -> Jest + Supertest health route, 404 & malformed JSON envelope tests
+    user.model.test.js    -> User schema validation, unique email & role unit tests
   eslint.config.js        -> ESLint 9 flat configuration
   .env.example            -> Environment variables template
 ```
@@ -59,11 +62,13 @@ Key files (agent: add one line per important file; remove if deleted):
 | `client/src/App.jsx` | Landing hero, floating navbar, requirement browser, and contract flow |
 | `client/src/index.css` | Biophilic design tokens and typography |
 | `server/src/config/db.js` | MongoDB connection with fail-fast config |
+| `server/src/models/User.js` | User schema with farmer/buyer roles and secure password hashing |
 | `server/src/utils/response.js` | Standard API response helpers |
 | `server/src/app.js` | Express app configuration and error handling envelope |
 | `server/src/server.js` | Backend server bootstrapper with MongoDB connection |
 | `server/tests/db.test.js` | Database connect and disconnect tests |
 | `server/tests/health.test.js` | Health check & envelope unit tests |
+| `server/tests/user.model.test.js` | User model unit test suite |
 
 ## 4. Conventions (follow these; do not re-decide)
 
@@ -73,7 +78,7 @@ Key files (agent: add one line per important file; remove if deleted):
 - **RBAC:** `authenticate` then `authorize('farmer'|'buyer')`; ownership checks in service layer; only the two parties can see an offer or contract.
 - **Validation:** Joi or Zod on every endpoint (pick one in T-003 and record it in section 5).
 - **IDs/codes:** Mongo ObjectId for ids; `contractNo` human-readable, unique.
-- **Money/units:** INR, stored as integer paise or Decimal128 (record the final choice in section 5); metric units (kg, quintal, hectare/acre with explicit unit field).
+- **Money/units:** INR, stored as integer paise (1 INR = 100 paise); metric units (kg, quintal, hectare/acre with explicit unit field).
 - **Never hard delete** contracts or negotiation entries.
 - **Append-only:** `NegotiationEntry` is immutable; contract terms are read-only once `active`.
 - **Negotiation rule:** a party cannot counter their own latest proposal; only the other party can accept.
@@ -88,14 +93,15 @@ Key files (agent: add one line per important file; remove if deleted):
 | 2026-10-26 | T-001 | Styling & UI Stack | React 19 + Vite 8 + Tailwind CSS v4 + Lucide React for consistent SVG icons (no emojis). |
 | 2026-10-26 | T-001 | Validation Library | Zod chosen for robust TypeScript-ready runtime schema validation. |
 | 2026-10-26 | T-001 | Testing & Linting Tooling | ESLint 9 (flat config) + oxlint (client) + Jest 29 ESM + Supertest. |
+| 2026-10-27 | T-003 | Money Storage Format | Integer paise (INR * 100) chosen to eliminate floating point imprecision across prices and contracts. |
 
-Open choices to settle early and record here: money storage format (integer paise vs Decimal128 in T-003), PDF library (pdfkit vs puppeteer in T-020).
+Open choices to settle early and record here: PDF library (pdfkit vs puppeteer in T-020).
 
 ## 6. Data Models Registry (add as models are built)
 
 | Model | File | Key fields / notes | Added in |
 |---|---|---|---|
-| (none yet) | | | |
+| `User` | `server/src/models/User.js` | `name`, `email` (unique), `phone`, `passwordHash` (hidden in toJSON), `role` (`farmer`\|`buyer`), `location`, `farmDetails` (farmer), `businessName` (buyer) | T-003 |
 
 Planned models: User (role farmer|buyer), RequirementListing, Offer, NegotiationEntry (append-only), Contract.
 
@@ -150,6 +156,7 @@ Planned models: User (role farmer|buyer), RequirementListing, Offer, Negotiation
 
 | Date | Task | Summary |
 |---|---|---|
+| 2026-10-27 | T-003 | Created User Mongoose model with role-based schemas (farmer/buyer), farmDetails & businessName extras, bcrypt password hashing, safe toJSON exclusions, and unit test suite. Recorded integer paise decision for money storage. |
 | 2026-10-27 | T-002 | Implemented Mongoose database connection manager with fail-fast options, standard response envelope helpers, central error & 404 handlers, malformed JSON body handling, and test suite with Jest, Supertest & mongodb-memory-server. |
 | 2026-10-26 | T-001 | Initialized client and server scaffolding, verified tooling and scripts. Implemented exact organic biophilic landing UI matching the reference image with Cormorant Garamond serif, floating pill navbar, misty hills backdrop, and verified health API with Jest & Supertest. Both lint and tests pass cleanly. |
 

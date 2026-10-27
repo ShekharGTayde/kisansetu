@@ -8,9 +8,9 @@
 
 | Field | Value |
 |---|---|
-| Current task | T-003: User model |
-| Last completed | T-002: Server skeleton and database |
-| Completed / Total | 2 / 23 |
+| Current task | T-004: Register and login API |
+| Last completed | T-003: User model |
+| Completed / Total | 3 / 23 |
 | Phase in progress | Phase 1: Role-based Authentication |
 | Blocked tasks | none |
 
@@ -66,7 +66,7 @@ server/tests/
 
 ## Phase 1: Role-based Authentication
 
-- [ ] **T-003: User model**
+- [x] **T-003: User model**
   - Depends on: T-002
   - Do: `User` schema: `name`, `email` (unique), `phone`, `passwordHash`, `role` (`farmer` | `buyer`), `location` (district/state text), role extras (`farmDetails` for farmer: crops grown; `businessName` for buyer), timestamps. Never return `passwordHash`.
   - Verify: model tests for required fields, unique email, invalid role rejected.
@@ -190,6 +190,7 @@ server/tests/
 ---
 
 ## Progress Log
+2026-10-27 | T-003 | Created User Mongoose model with role-based schemas (farmer/buyer), farmDetails & businessName extras, bcrypt password hashing, safe toJSON exclusions, and unit test suite.
 2026-10-27 | T-002 | Implemented Mongoose connection with fail-fast config, standard response envelope helpers, central error & 404 handlers, malformed JSON body handling, and test suite with Jest, Supertest & mongodb-memory-server.
 2026-10-26 | T-001 | Verified client (React+Vite) & server (Express). Created exact organic biophilic theme with Cormorant Garamond italic serif & Plus Jakarta Sans, floating pill navbar, Jest & ESLint configs. Verified lint and test passing.
 
