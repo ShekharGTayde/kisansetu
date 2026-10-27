@@ -8,9 +8,9 @@
 
 | Field | Value |
 |---|---|
-| Current task | T-008: Listing model |
-| Last completed | T-007: Register/Login UI and role dashboards |
-| Completed / Total | 7 / 23 |
+| Current task | T-009: Buyer listing API |
+| Last completed | T-008: Listing model |
+| Completed / Total | 8 / 23 |
 | Phase in progress | Phase 2: Buyer Requirement Listings |
 | Blocked tasks | none |
 
@@ -95,7 +95,7 @@ server/tests/
 
 ## Phase 2: Buyer Requirement Listings
 
-- [ ] **T-008: Listing model**
+- [x] **T-008: Listing model**
   - Depends on: T-005
   - Do: `RequirementListing` schema: `buyerId`, `crop`, `variety`, `quantity`, `unit`, `qualitySpec` (grade, moisture/notes), `priceTerms` (`pricePerUnit` or min/max), `deliveryLocation`, `deliveryDate` (or window), `paymentTerms` (text), `validTill`, `status` (`open` | `paused` | `closed` | `fulfilled`), timestamps. Indexes on crop, status, location.
   - Verify: model validation tests (positive quantity, future dates).
@@ -190,6 +190,7 @@ server/tests/
 ---
 
 ## Progress Log
+2026-10-27 | T-008 | Built RequirementListing Mongoose model with validation, future dates, remainingQuantity tracking, indexes, and Jest unit test suite.
 2026-10-27 | T-007 | Created role-aware RegisterPage, LoginPage with 1-click demo logins, FarmerDashboard and BuyerDashboard with statistics and action links, and idempotent database seed script.
 2026-10-27 | T-006 | Implemented frontend foundation with React Router, axios API client with Bearer header & 401 handling, AuthContext, ProtectedRoute with role checks, and role-aware floating pill navbar and Layout.
 2026-10-27 | T-005 | Built JWT authenticate and role-based authorize('farmer'|'buyer') middleware with isOwner helper and verified 401/403 access control with Supertest.

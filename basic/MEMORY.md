@@ -20,10 +20,10 @@ Last updated: 2026-10-27 | After task: T-007 | Updated by: agent
 
 | Item | Value |
 |---|---|
-| Current task | T-008: Listing model |
-| Last completed task | T-007: Register/Login UI and role dashboards |
-| Tasks done | 7 / 23 |
-| Repo state | Role-aware Register & Login with 1-click demo logins, Farmer & Buyer dashboards, seed script verified |
+| Current task | T-009: Buyer listing API |
+| Last completed task | T-008: Listing model |
+| Tasks done | 8 / 23 |
+| Repo state | RequirementListing model created with validation, future date guards, indexes, remainingQuantity tracking |
 | Known broken / failing | none |
 
 ## 3. Repo Map (record real paths as they are created)
@@ -63,11 +63,13 @@ server/
       auth.js             -> JWT authenticate, authorize('farmer'|'buyer'), isOwner helpers
       validate.js         -> Zod schema validation middleware
     models/
+      RequirementListing.js -> RequirementListing schema with quantity, priceTerms, delivery specs
       User.js             -> User schema with farmer/buyer roles, extras, bcrypt hashing
     routes/
       auth.routes.js      -> Express router for /api/v1/auth
     utils/
       response.js         -> Standard API envelope helpers (sendSuccess, sendError)
+      seed.js             -> Database seeder with demo accounts
       token.js            -> JWT token sign and verify helpers
     app.js                -> Express app with helmet, cors, standard envelope, central 404 and error handlers
     server.js             -> MongoDB connector and Port 5000 listener
@@ -75,6 +77,7 @@ server/
     auth.test.js          -> Auth endpoints (register, login, me, logout) Supertest suite
     db.test.js            -> MongoMemoryServer connect/disconnect unit tests
     health.test.js        -> Jest + Supertest health route, 404 & malformed JSON envelope tests
+    listing.model.test.js -> RequirementListing schema validation & future date tests
     middleware.test.js    -> RBAC and authenticate middleware Supertest suite
     user.model.test.js    -> User schema validation, unique email & role unit tests
   eslint.config.js        -> ESLint 9 flat configuration
@@ -99,15 +102,18 @@ Key files (agent: add one line per important file; remove if deleted):
 | `server/src/controllers/auth.controller.js` | Authentication handlers (register, login, getMe, logout) |
 | `server/src/middleware/auth.js` | JWT authenticate, authorize, and isOwner RBAC middleware |
 | `server/src/middleware/validate.js` | Zod schema validation middleware |
+| `server/src/models/RequirementListing.js` | RequirementListing schema with quantity, priceTerms, delivery specs |
 | `server/src/models/User.js` | User schema with farmer/buyer roles and secure password hashing |
 | `server/src/routes/auth.routes.js` | Auth endpoints router |
 | `server/src/utils/response.js` | Standard API response helpers |
+| `server/src/utils/seed.js` | Database seed utility |
 | `server/src/utils/token.js` | JWT token signer and verifier |
 | `server/src/app.js` | Express app configuration and error handling envelope |
 | `server/src/server.js` | Backend server bootstrapper with MongoDB connection |
 | `server/tests/auth.test.js` | Auth integration tests |
 | `server/tests/db.test.js` | Database connect and disconnect tests |
 | `server/tests/health.test.js` | Health check & envelope unit tests |
+| `server/tests/listing.model.test.js` | RequirementListing model unit tests |
 | `server/tests/middleware.test.js` | RBAC and authenticate middleware tests |
 | `server/tests/user.model.test.js` | User model unit test suite |
 
@@ -143,6 +149,7 @@ Open choices to settle early and record here: PDF library (pdfkit vs puppeteer i
 | Model | File | Key fields / notes | Added in |
 |---|---|---|---|
 | `User` | `server/src/models/User.js` | `name`, `email` (unique), `phone`, `passwordHash` (hidden in toJSON), `role` (`farmer`\|`buyer`), `location`, `farmDetails` (farmer), `businessName` (buyer) | T-003 |
+| `RequirementListing` | `server/src/models/RequirementListing.js` | `buyerId`, `crop`, `variety`, `quantity`, `remainingQuantity`, `unit`, `qualitySpec`, `priceTerms` (paise), `deliveryLocation`, `deliveryDate`, `paymentTerms`, `status` | T-008 |
 
 Planned models: User (role farmer|buyer), RequirementListing, Offer, NegotiationEntry (append-only), Contract.
 
@@ -205,6 +212,7 @@ Planned models: User (role farmer|buyer), RequirementListing, Offer, Negotiation
 
 | Date | Task | Summary |
 |---|---|---|
+| 2026-10-27 | T-008 | Built RequirementListing Mongoose model with validation, future dates, remainingQuantity tracking, indexes, and Jest unit test suite. |
 | 2026-10-27 | T-007 | Built role-aware RegisterPage, LoginPage with 1-click quick demo buttons, Farmer and Buyer dashboards with metrics, and verified database seed script. |
 | 2026-10-27 | T-006 | Implemented frontend foundation with React Router, axios API client with Bearer header & 401 handling, AuthContext, ProtectedRoute with role checks, and role-aware floating pill navbar and Layout. |
 | 2026-10-27 | T-005 | Built JWT authenticate and role-based authorize('farmer'|'buyer') middleware with isOwner helper and verified 401/403 access control with Supertest. |
