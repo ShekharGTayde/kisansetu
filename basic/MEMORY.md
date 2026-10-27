@@ -2,7 +2,7 @@
 
 Living project memory. **Read this instead of re-analyzing the project.** Update it at the end of every task (see rules at the bottom). Keep it short, factual, and current; edit entries in place rather than appending duplicates.
 
-Last updated: 2026-10-26 | After task: T-001 | Updated by: agent
+Last updated: 2026-10-27 | After task: T-002 | Updated by: agent
 
 ---
 
@@ -20,10 +20,10 @@ Last updated: 2026-10-26 | After task: T-001 | Updated by: agent
 
 | Item | Value |
 |---|---|
-| Current task | T-002 |
-| Last completed task | T-001: Verify existing client/server and tooling |
-| Tasks done | 1 / 23 |
-| Repo state | `client/` (React + Vite + Tailwind + Lucide) & `server/` (Express + ESLint + Jest) verified and functional |
+| Current task | T-003: User model |
+| Last completed task | T-002: Server skeleton and database |
+| Tasks done | 2 / 23 |
+| Repo state | Server skeleton connected with Mongoose fail-fast config, response helpers, central error & 404 handlers, test suite passing |
 | Known broken / failing | none |
 
 ## 3. Repo Map (record real paths as they are created)
@@ -39,10 +39,15 @@ client/
   vite.config.js          -> Vite config with Tailwind & proxy to :5000
 server/
   src/
+    config/
+      db.js               -> Mongoose connection manager with fail-fast options
+    utils/
+      response.js         -> Standard API envelope helpers (sendSuccess, sendError)
     app.js                -> Express app with helmet, cors, standard envelope, central 404 and error handlers
-    server.js             -> Port 5000 listener
+    server.js             -> MongoDB connector and Port 5000 listener
   tests/
-    health.test.js        -> Jest + Supertest health route & 404 tests
+    db.test.js            -> MongoMemoryServer connect/disconnect unit tests
+    health.test.js        -> Jest + Supertest health route, 404 & malformed JSON envelope tests
   eslint.config.js        -> ESLint 9 flat configuration
   .env.example            -> Environment variables template
 ```
@@ -53,8 +58,11 @@ Key files (agent: add one line per important file; remove if deleted):
 |---|---|
 | `client/src/App.jsx` | Landing hero, floating navbar, requirement browser, and contract flow |
 | `client/src/index.css` | Biophilic design tokens and typography |
+| `server/src/config/db.js` | MongoDB connection with fail-fast config |
+| `server/src/utils/response.js` | Standard API response helpers |
 | `server/src/app.js` | Express app configuration and error handling envelope |
-| `server/src/server.js` | Backend server bootstrapper |
+| `server/src/server.js` | Backend server bootstrapper with MongoDB connection |
+| `server/tests/db.test.js` | Database connect and disconnect tests |
 | `server/tests/health.test.js` | Health check & envelope unit tests |
 
 ## 4. Conventions (follow these; do not re-decide)
@@ -142,6 +150,7 @@ Planned models: User (role farmer|buyer), RequirementListing, Offer, Negotiation
 
 | Date | Task | Summary |
 |---|---|---|
+| 2026-10-27 | T-002 | Implemented Mongoose database connection manager with fail-fast options, standard response envelope helpers, central error & 404 handlers, malformed JSON body handling, and test suite with Jest, Supertest & mongodb-memory-server. |
 | 2026-10-26 | T-001 | Initialized client and server scaffolding, verified tooling and scripts. Implemented exact organic biophilic landing UI matching the reference image with Cormorant Garamond serif, floating pill navbar, misty hills backdrop, and verified health API with Jest & Supertest. Both lint and tests pass cleanly. |
 
 ---

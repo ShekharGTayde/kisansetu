@@ -8,10 +8,10 @@
 
 | Field | Value |
 |---|---|
-| Current task | T-002 |
-| Last completed | T-001: Verify existing client/server and tooling |
-| Completed / Total | 1 / 23 |
-| Phase in progress | Phase 0: Setup |
+| Current task | T-003: User model |
+| Last completed | T-002: Server skeleton and database |
+| Completed / Total | 2 / 23 |
+| Phase in progress | Phase 1: Role-based Authentication |
 | Blocked tasks | none |
 
 > `client/` and `server/` folders verified with tooling, scripts, ESLint, and test suite.
@@ -57,7 +57,7 @@ server/tests/
   - Do: inspect existing `client/` (React + Vite) and `server/` (Node + Express); fill gaps only: ESLint/Prettier, `.gitignore`, `.env.example` (PORT, MONGO_URI, JWT_SECRET, CLIENT_URL), npm scripts (`dev`, `lint`, `test`). Record real structure and commands in `MEMORY.md`.
   - Verify: both apps start; lint passes.
 
-- [ ] **T-002: Server skeleton and database**
+- [x] **T-002: Server skeleton and database**
   - Depends on: T-001
   - Do: Express app with helmet, cors, JSON parser, request logger; MongoDB connection (Mongoose) with fail-fast config; central error handler; 404 handler; response helpers; `GET /api/v1/health`. Set up Jest + Supertest + mongodb-memory-server.
   - Verify: health returns 200; bad JSON returns standard error envelope; sample test passes.
@@ -190,6 +190,7 @@ server/tests/
 ---
 
 ## Progress Log
+2026-10-27 | T-002 | Implemented Mongoose connection with fail-fast config, standard response envelope helpers, central error & 404 handlers, malformed JSON body handling, and test suite with Jest, Supertest & mongodb-memory-server.
 2026-10-26 | T-001 | Verified client (React+Vite) & server (Express). Created exact organic biophilic theme with Cormorant Garamond italic serif & Plus Jakarta Sans, floating pill navbar, Jest & ESLint configs. Verified lint and test passing.
 
 <!-- Agent: append one line per completed task: YYYY-MM-DD | T-0XX | notes / deviations -->
