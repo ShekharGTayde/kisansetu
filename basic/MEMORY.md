@@ -2,7 +2,7 @@
 
 Living project memory. **Read this instead of re-analyzing the project.** Update it at the end of every task (see rules at the bottom). Keep it short, factual, and current; edit entries in place rather than appending duplicates.
 
-Last updated: 2026-10-27 | After task: T-006 | Updated by: agent
+Last updated: 2026-10-27 | After task: T-007 | Updated by: agent
 
 ---
 
@@ -20,10 +20,10 @@ Last updated: 2026-10-27 | After task: T-006 | Updated by: agent
 
 | Item | Value |
 |---|---|
-| Current task | T-007: Register/Login UI and role dashboards |
-| Last completed task | T-006: Frontend foundation |
-| Tasks done | 6 / 23 |
-| Repo state | Frontend architecture wired with React Router, AuthContext, Axios Bearer interceptor, ProtectedRoute, and Layout |
+| Current task | T-008: Listing model |
+| Last completed task | T-007: Register/Login UI and role dashboards |
+| Tasks done | 7 / 23 |
+| Repo state | Role-aware Register & Login with 1-click demo logins, Farmer & Buyer dashboards, seed script verified |
 | Known broken / failing | none |
 
 ## 3. Repo Map (record real paths as they are created)
@@ -205,6 +205,7 @@ Planned models: User (role farmer|buyer), RequirementListing, Offer, Negotiation
 
 | Date | Task | Summary |
 |---|---|---|
+| 2026-10-27 | T-007 | Built role-aware RegisterPage, LoginPage with 1-click quick demo buttons, Farmer and Buyer dashboards with metrics, and verified database seed script. |
 | 2026-10-27 | T-006 | Implemented frontend foundation with React Router, axios API client with Bearer header & 401 handling, AuthContext, ProtectedRoute with role checks, and role-aware floating pill navbar and Layout. |
 | 2026-10-27 | T-005 | Built JWT authenticate and role-based authorize('farmer'|'buyer') middleware with isOwner helper and verified 401/403 access control with Supertest. |
 | 2026-10-27 | T-004 | Implemented /api/v1/auth routes (register, login, me, logout), Zod input validation schemas, JWT token generation with role payload, duplicate email check, and comprehensive Supertest suite. |

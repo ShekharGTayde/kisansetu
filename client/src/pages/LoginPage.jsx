@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { Sprout, Lock, Mail, AlertCircle, ArrowRight } from 'lucide-react'
+import { Sprout, Lock, Mail, AlertCircle, ArrowRight, Building2 } from 'lucide-react'
 import { useAuth } from '../context/useAuth.js'
 
 export default function LoginPage() {
@@ -23,19 +23,34 @@ export default function LoginPage() {
     setError('')
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const performLogin = async (email, password) => {
     setIsSubmitting(true)
     setError('')
-
     try {
-      const user = await login(formData.email, formData.password)
-      const destination = location.state?.from?.pathname || (user.role === 'farmer' ? '/farmer/dashboard' : '/buyer/dashboard')
+      const user = await login(email, password)
+      const destination =
+        location.state?.from?.pathname ||
+        (user.role === 'farmer' ? '/farmer/dashboard' : '/buyer/dashboard')
       navigate(destination, { replace: true })
     } catch (err) {
       setError(err.message || 'Login failed. Please check your credentials.')
     } finally {
       setIsSubmitting(false)
+    }
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    await performLogin(formData.email, formData.password)
+  }
+
+  const handleDemoLogin = async (role) => {
+    if (role === 'farmer') {
+      setFormData({ email: 'farmer@kisansetu.in', password: 'Farmer@123' })
+      await performLogin('farmer@kisansetu.in', 'Farmer@123')
+    } else {
+      setFormData({ email: 'buyer@itcagri.com', password: 'Buyer@123' })
+      await performLogin('buyer@itcagri.com', 'Buyer@123')
     }
   }
 
@@ -52,6 +67,33 @@ export default function LoginPage() {
           <p className="text-xs text-[#526a57] mt-1">
             Sign in to access your pre-crop contracts and requirements
           </p>
+        </div>
+
+        {/* 1-Click Quick Demo Sign-in */}
+        <div className="mb-6 p-3.5 bg-[#f5f8f5] rounded-2xl border border-[#dfe7e0]">
+          <span className="block text-[11px] font-semibold text-[#37523d] uppercase tracking-wider mb-2 text-center">
+            Quick 1-Click Demo Sign-In
+          </span>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => handleDemoLogin('farmer')}
+              disabled={isSubmitting}
+              className="px-3 py-2 rounded-xl bg-white hover:bg-emerald-50 text-[#1b3b22] border border-[#cfdad0] text-xs font-semibold flex items-center justify-center gap-1.5 transition-all shadow-sm cursor-pointer disabled:opacity-50"
+            >
+              <Sprout className="w-3.5 h-3.5 text-emerald-700" />
+              <span>Demo Farmer</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => handleDemoLogin('buyer')}
+              disabled={isSubmitting}
+              className="px-3 py-2 rounded-xl bg-white hover:bg-emerald-50 text-[#1b3b22] border border-[#cfdad0] text-xs font-semibold flex items-center justify-center gap-1.5 transition-all shadow-sm cursor-pointer disabled:opacity-50"
+            >
+              <Building2 className="w-3.5 h-3.5 text-emerald-700" />
+              <span>Demo Buyer</span>
+            </button>
+          </div>
         </div>
 
         {error && (

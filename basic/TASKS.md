@@ -8,10 +8,10 @@
 
 | Field | Value |
 |---|---|
-| Current task | T-007: Register/Login UI and role dashboards |
-| Last completed | T-006: Frontend foundation |
-| Completed / Total | 6 / 23 |
-| Phase in progress | Phase 1: Role-based Authentication |
+| Current task | T-008: Listing model |
+| Last completed | T-007: Register/Login UI and role dashboards |
+| Completed / Total | 7 / 23 |
+| Phase in progress | Phase 2: Buyer Requirement Listings |
 | Blocked tasks | none |
 
 > `client/` and `server/` folders verified with tooling, scripts, ESLint, and test suite.
@@ -86,7 +86,7 @@ server/tests/
   - Do: React Router, API client (axios with token header and 401 handling), `AuthContext` (user, role, login, logout), `ProtectedRoute` with role check, layout with role-aware navbar.
   - Verify: unauthenticated users redirected to login; wrong role redirected to own dashboard.
 
-- [ ] **T-007: Register/Login UI and role dashboards**
+- [x] **T-007: Register/Login UI and role dashboards**
   - Depends on: T-006
   - Do: Register page (role selector Farmer/Buyer, role-specific fields), Login page, `FarmerDashboard` and `BuyerDashboard` placeholders with navigation to later features; redirect to the right dashboard after login.
   - Verify: register as each role then login lands on the correct dashboard; token persists on refresh.
@@ -190,6 +190,7 @@ server/tests/
 ---
 
 ## Progress Log
+2026-10-27 | T-007 | Created role-aware RegisterPage, LoginPage with 1-click demo logins, FarmerDashboard and BuyerDashboard with statistics and action links, and idempotent database seed script.
 2026-10-27 | T-006 | Implemented frontend foundation with React Router, axios API client with Bearer header & 401 handling, AuthContext, ProtectedRoute with role checks, and role-aware floating pill navbar and Layout.
 2026-10-27 | T-005 | Built JWT authenticate and role-based authorize('farmer'|'buyer') middleware with isOwner helper and verified 401/403 access control with Supertest.
 2026-10-27 | T-004 | Implemented /api/v1/auth routes (register, login, me, logout), Zod input validation, JWT token creation with role payload, duplicate email check, and comprehensive Supertest suite.
