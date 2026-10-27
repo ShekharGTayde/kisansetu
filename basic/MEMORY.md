@@ -2,7 +2,7 @@
 
 Living project memory. **Read this instead of re-analyzing the project.** Update it at the end of every task (see rules at the bottom). Keep it short, factual, and current; edit entries in place rather than appending duplicates.
 
-Last updated: 2026-10-27 | After task: T-005 | Updated by: agent
+Last updated: 2026-10-27 | After task: T-006 | Updated by: agent
 
 ---
 
@@ -20,10 +20,10 @@ Last updated: 2026-10-27 | After task: T-005 | Updated by: agent
 
 | Item | Value |
 |---|---|
-| Current task | T-006: Frontend foundation |
-| Last completed task | T-005: Auth and role middleware |
-| Tasks done | 5 / 23 |
-| Repo state | JWT authenticate and role-based authorize middleware created with 401/403 verification and test suite passing |
+| Current task | T-007: Register/Login UI and role dashboards |
+| Last completed task | T-006: Frontend foundation |
+| Tasks done | 6 / 23 |
+| Repo state | Frontend architecture wired with React Router, AuthContext, Axios Bearer interceptor, ProtectedRoute, and Layout |
 | Known broken / failing | none |
 
 ## 3. Repo Map (record real paths as they are created)
@@ -31,8 +31,24 @@ Last updated: 2026-10-27 | After task: T-005 | Updated by: agent
 ```
 client/
   src/
-    App.jsx               -> Interactive biophilic landing with flow tabs & live health indicator
-    index.css             -> Design tokens (Cormorant Garamond, Plus Jakarta Sans, Forest Green #1b3b22)
+    components/
+      Layout.jsx          -> Global shell with floating pill navbar and footer
+      Navbar.jsx          -> Role-aware organic floating pill navigation
+      ProtectedRoute.jsx  -> Auth and role validation guard with redirection
+    context/
+      AuthContext.jsx     -> User authentication provider and token hydration
+      authContextDef.js   -> React Context base definition for Fast Refresh
+      useAuth.js          -> Custom useAuth hook
+    pages/
+      LandingPage.jsx     -> Biophilic hero, interactive workflow tabs, marketplace preview & sandbox
+      LoginPage.jsx       -> Authentication sign-in form with error envelope handling
+      RegisterPage.jsx    -> Role-based registration (Farmer/Buyer) with role-specific profile fields
+      FarmerDashboard.jsx -> Farmer control center with statistics and contract shortcuts
+      BuyerDashboard.jsx  -> Buyer procurement center with statistics and listing shortcuts
+    services/
+      api.js              -> Axios instance with automatic Bearer token injection and 401 interceptor
+    App.jsx               -> Router configuration and route tree
+    index.css             -> Biophilic design tokens (Cormorant Garamond, Plus Jakarta Sans, Forest Green)
     main.jsx              -> Vite React root
   public/
     images/hero-hills.jpg -> Misty pine hills background asset
@@ -69,8 +85,16 @@ Key files (agent: add one line per important file; remove if deleted):
 
 | Path | Purpose |
 |---|---|
-| `client/src/App.jsx` | Landing hero, floating navbar, requirement browser, and contract flow |
-| `client/src/index.css` | Biophilic design tokens and typography |
+| `client/src/App.jsx` | React Router route configuration |
+| `client/src/services/api.js` | Axios API client with token interceptor and 401 handling |
+| `client/src/context/AuthContext.jsx` | Authentication provider and state |
+| `client/src/components/ProtectedRoute.jsx` | Role-based route guard |
+| `client/src/components/Navbar.jsx` | Role-aware floating pill navbar |
+| `client/src/pages/LandingPage.jsx` | Landing hero and interactive preview |
+| `client/src/pages/FarmerDashboard.jsx` | Farmer portal dashboard |
+| `client/src/pages/BuyerDashboard.jsx` | Buyer portal dashboard |
+| `client/src/pages/LoginPage.jsx` | Sign-in page |
+| `client/src/pages/RegisterPage.jsx` | Sign-up page with role selector |
 | `server/src/config/db.js` | MongoDB connection with fail-fast config |
 | `server/src/controllers/auth.controller.js` | Authentication handlers (register, login, getMe, logout) |
 | `server/src/middleware/auth.js` | JWT authenticate, authorize, and isOwner RBAC middleware |
@@ -136,7 +160,11 @@ Planned models: User (role farmer|buyer), RequirementListing, Offer, Negotiation
 
 | Route | Page/file | Roles | Task |
 |---|---|---|---|
-| / | `client/src/App.jsx` | public | Landing page with floating navbar, biophilic hero, requirement marketplace preview, and live negotiation sandbox | T-001 |
+| `/` | `client/src/pages/LandingPage.jsx` | public | Landing page with biophilic hero, requirement marketplace preview, and live negotiation sandbox | T-001, T-006 |
+| `/login` | `client/src/pages/LoginPage.jsx` | public | User login with email/password and redirection | T-006, T-007 |
+| `/register` | `client/src/pages/RegisterPage.jsx` | public | User signup with role selector (Farmer/Buyer) and role-specific fields | T-006, T-007 |
+| `/farmer/dashboard` | `client/src/pages/FarmerDashboard.jsx` | farmer | Farmer personal dashboard | T-006, T-007 |
+| `/buyer/dashboard` | `client/src/pages/BuyerDashboard.jsx` | buyer | Buyer personal dashboard | T-006, T-007 |
 
 ## 9. Environment Variables
 
@@ -177,6 +205,7 @@ Planned models: User (role farmer|buyer), RequirementListing, Offer, Negotiation
 
 | Date | Task | Summary |
 |---|---|---|
+| 2026-10-27 | T-006 | Implemented frontend foundation with React Router, axios API client with Bearer header & 401 handling, AuthContext, ProtectedRoute with role checks, and role-aware floating pill navbar and Layout. |
 | 2026-10-27 | T-005 | Built JWT authenticate and role-based authorize('farmer'|'buyer') middleware with isOwner helper and verified 401/403 access control with Supertest. |
 | 2026-10-27 | T-004 | Implemented /api/v1/auth routes (register, login, me, logout), Zod input validation schemas, JWT token generation with role payload, duplicate email check, and comprehensive Supertest suite. |
 | 2026-10-27 | T-003 | Created User Mongoose model with role-based schemas (farmer/buyer), farmDetails & businessName extras, bcrypt password hashing, safe toJSON exclusions, and unit test suite. Recorded integer paise decision for money storage. |

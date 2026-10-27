@@ -8,9 +8,9 @@
 
 | Field | Value |
 |---|---|
-| Current task | T-006: Frontend foundation |
-| Last completed | T-005: Auth and role middleware |
-| Completed / Total | 5 / 23 |
+| Current task | T-007: Register/Login UI and role dashboards |
+| Last completed | T-006: Frontend foundation |
+| Completed / Total | 6 / 23 |
 | Phase in progress | Phase 1: Role-based Authentication |
 | Blocked tasks | none |
 
@@ -81,7 +81,7 @@ server/tests/
   - Do: `authenticate` and `authorize('farmer'|'buyer')` middleware; ownership helper; apply to a sample route for each role.
   - Verify: 401 without token; 403 for wrong role.
 
-- [ ] **T-006: Frontend foundation**
+- [x] **T-006: Frontend foundation**
   - Depends on: T-005
   - Do: React Router, API client (axios with token header and 401 handling), `AuthContext` (user, role, login, logout), `ProtectedRoute` with role check, layout with role-aware navbar.
   - Verify: unauthenticated users redirected to login; wrong role redirected to own dashboard.
@@ -190,6 +190,7 @@ server/tests/
 ---
 
 ## Progress Log
+2026-10-27 | T-006 | Implemented frontend foundation with React Router, axios API client with Bearer header & 401 handling, AuthContext, ProtectedRoute with role checks, and role-aware floating pill navbar and Layout.
 2026-10-27 | T-005 | Built JWT authenticate and role-based authorize('farmer'|'buyer') middleware with isOwner helper and verified 401/403 access control with Supertest.
 2026-10-27 | T-004 | Implemented /api/v1/auth routes (register, login, me, logout), Zod input validation, JWT token creation with role payload, duplicate email check, and comprehensive Supertest suite.
 2026-10-27 | T-003 | Created User Mongoose model with role-based schemas (farmer/buyer), farmDetails & businessName extras, bcrypt password hashing, safe toJSON exclusions, and unit test suite.
