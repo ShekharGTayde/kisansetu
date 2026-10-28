@@ -13,7 +13,17 @@ KisanSetu connects farmers and institutional buyers before sowing. Buyers publis
 
    The repository root contains only development scripts, so it does not need a
    `node_modules` directory.
-2. Copy `server/.env.example` to `server/.env` and set `MONGO_URI` and `JWT_SECRET`.
+2. Copy the environment templates and set the required values:
+
+   ```powershell
+   Copy-Item server/.env.example server/.env
+   Copy-Item client/.env.example client/.env
+   ```
+
+   `client/.env` controls the browser API URL through `VITE_API_URL`. For a
+   deployed frontend, set it to the deployed API base URL, such as
+   `https://api.example.com/api/v1`. Client environment variables are public
+   after the frontend is built, so never put secrets in `client/.env`.
 3. Start both applications:
 
    ```powershell
