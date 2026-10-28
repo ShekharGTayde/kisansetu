@@ -34,6 +34,7 @@ export default function FarmerDashboard() {
             >
               <FileText className="w-4 h-4" /> My Contracts
             </Link>
+            <Link to="/farmer/crops/new" className="bg-emerald-800/80 hover:bg-emerald-800 text-white border border-emerald-600/50 px-5 py-2.5 rounded-full text-sm font-medium transition-colors flex items-center gap-1.5">List a Crop</Link>
           </div>
         </div>
       </div>

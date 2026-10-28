@@ -2,21 +2,17 @@
   "name": "kisansetu-agripact",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "concurrently -n \"server,client\" -c \"green,blue\" \"npm run dev:server\" \"npm run dev:client\"",
+    "dev": "node scripts/dev.js",
     "dev:client": "npm --prefix client run dev",
     "dev:server": "npm --prefix server run dev",
+    "seed:demo": "npm --prefix server run seed:demo",
     "build:client": "npm --prefix client run build",
     "lint:client": "npm --prefix client run lint",
     "lint:server": "npm --prefix server run lint",
     "lint": "npm run lint:server && npm run lint:client",
     "test:server": "npm --prefix server run test",
     "test": "npm run test:server"
-  },
-  "dependencies": {
-    "motion": "^14.6.0"
-  },
-  "devDependencies": {
-    "concurrently": "^9.1.2"
   }
 }

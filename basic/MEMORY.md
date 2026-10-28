@@ -12,7 +12,7 @@ Last updated: 2026-10-27 | After task: T-007 | Updated by: agent
 - **Build scope (current):** role-based login (farmer/buyer) -> buyer posts requirement listing -> farmer browses and submits offer -> both negotiate with counter-proposals -> agreement generates a contract -> both confirm -> contract active, PDF download.
 - **Out of scope for now:** admin panel, verification/OTP, land management, crop progress, delivery, quality, payments, disputes, ratings, weather, i18n, analytics, sockets (use polling).
 - **Roles:** `farmer`, `buyer` only.
-- **Stack:** MongoDB + Mongoose, Express, React (Vite), Node. Socket.IO for realtime. JWT auth (access + refresh).
+- **Stack:** MongoDB + Mongoose, Express, React (Vite), Node. Polling for updates. JWT access-token auth.
 - **Scope docs:** PRD (FR-/NFR- IDs), `TASKS.md` (ordered build plan, 23 tasks), `AGENTS.md` (how to work).
 - **Phases:** Setup T-001 to T-002, Auth T-003 to T-007, Listings T-008 to T-012, Offers/Negotiation T-013 to T-016, Contract T-017 to T-021, Finish T-022 to T-023.
 
@@ -20,10 +20,10 @@ Last updated: 2026-10-27 | After task: T-007 | Updated by: agent
 
 | Item | Value |
 |---|---|
-| Current task | T-009: Buyer listing API |
-| Last completed task | T-008: Listing model |
-| Tasks done | 8 / 23 |
-| Repo state | RequirementListing model created with validation, future date guards, indexes, remainingQuantity tracking |
+| Current task | Complete |
+| Last completed task | T-024: Direct farmer crop marketplace |
+| Tasks done | 24 / 24 |
+| Repo state | Core contract flow plus direct farmer crop marketplace and purchase requests are implemented |
 | Known broken / failing | none |
 
 ## 3. Repo Map (record real paths as they are created)
@@ -64,9 +64,15 @@ server/
       validate.js         -> Zod schema validation middleware
     models/
       RequirementListing.js -> RequirementListing schema with quantity, priceTerms, delivery specs
+      Offer.js             -> Negotiable offer with latest proposal and accepted terms snapshot
+      NegotiationEntry.js  -> Append-only proposal history
+      Contract.js          -> Pending/active/cancelled contract and confirmations
       User.js             -> User schema with farmer/buyer roles, extras, bcrypt hashing
     routes/
       auth.routes.js      -> Express router for /api/v1/auth
+      listing.routes.js   -> Buyer listing management and authenticated browse/detail endpoints
+      offer.routes.js     -> Offer, counter, decision, and history endpoints
+      contract.routes.js  -> Contract list, detail, confirmation, and cancellation endpoints
     utils/
       response.js         -> Standard API envelope helpers (sendSuccess, sendError)
       seed.js             -> Database seeder with demo accounts
@@ -103,6 +109,12 @@ Key files (agent: add one line per important file; remove if deleted):
 | `server/src/middleware/auth.js` | JWT authenticate, authorize, and isOwner RBAC middleware |
 | `server/src/middleware/validate.js` | Zod schema validation middleware |
 | `server/src/models/RequirementListing.js` | RequirementListing schema with quantity, priceTerms, delivery specs |
+| `server/src/models/Offer.js` | Negotiable offer with latest proposal and accepted terms snapshot |
+| `server/src/models/NegotiationEntry.js` | Append-only offer proposal history |
+| `server/src/models/Contract.js` | Contract terms snapshot, hash, status, and confirmations |
+| `server/tests/flow.e2e.test.js` | Core API flow coverage from registration through active contract |
+| `server/src/models/CropListing.js` | Farmer-listed available or expected crop inventory with reserved quantity |
+| `server/src/models/PurchaseOrder.js` | Direct buyer purchase request and farmer decision state |
 | `server/src/models/User.js` | User schema with farmer/buyer roles and secure password hashing |
 | `server/src/routes/auth.routes.js` | Auth endpoints router |
 | `server/src/utils/response.js` | Standard API response helpers |
@@ -142,7 +154,7 @@ Key files (agent: add one line per important file; remove if deleted):
 | 2026-10-26 | T-001 | Testing & Linting Tooling | ESLint 9 (flat config) + oxlint (client) + Jest 29 ESM + Supertest. |
 | 2026-10-27 | T-003 | Money Storage Format | Integer paise (INR * 100) chosen to eliminate floating point imprecision across prices and contracts. |
 
-Open choices to settle early and record here: PDF library (pdfkit vs puppeteer in T-020).
+| 2026-10-27 | T-020 | PDF generation | Implemented a dependency-free PDF writer for contract export to keep deployment lightweight. |
 
 ## 6. Data Models Registry (add as models are built)
 
@@ -162,6 +174,32 @@ Planned models: User (role farmer|buyer), RequirementListing, Offer, Negotiation
 | POST | /api/v1/auth/login | public | Login with email & password | T-004 |
 | GET | /api/v1/auth/me | authenticated | Fetch current authenticated user | T-004 |
 | POST | /api/v1/auth/logout | public | Logout user session | T-004 |
+| POST | /api/v1/listings | buyer | Create requirement | T-009 |
+| PUT | /api/v1/listings/:id | buyer owner | Edit requirement before acceptance | T-009 |
+| PATCH | /api/v1/listings/:id/status | buyer owner | Pause/open/close requirement | T-009 |
+| GET | /api/v1/listings/mine | buyer | List buyer requirements | T-009 |
+| GET | /api/v1/listings | authenticated | Browse open, non-expired requirements | T-010 |
+| GET | /api/v1/listings/:id | authenticated | Requirement detail | T-010 |
+| POST | /api/v1/listings/:id/offers | farmer | Submit an offer | T-013 |
+| POST | /api/v1/offers/:id/counter | offer party | Counter latest proposal | T-014 |
+| GET | /api/v1/offers/:id/history | offer party | Read negotiation history | T-014 |
+| POST | /api/v1/offers/:id/accept | offer party | Accept latest proposal and create contract | T-015 |
+| POST | /api/v1/offers/:id/reject | offer party | Reject offer | T-015 |
+| POST | /api/v1/offers/:id/withdraw | farmer | Withdraw offer | T-015 |
+| GET | /api/v1/contracts/mine | authenticated | List party contracts | T-019 |
+| GET | /api/v1/contracts/:id | contract party | Contract detail | T-019 |
+| POST | /api/v1/contracts/:id/confirm | contract party | Confirm pending contract | T-018 |
+| POST | /api/v1/contracts/:id/cancel | contract party | Cancel pending contract | T-018 |
+| GET | /api/v1/crops | authenticated | Browse farmer crop listings | T-024 |
+| GET | /api/v1/crops/mine | farmer | List farmer's own crops | T-024 |
+| POST | /api/v1/crops | farmer | Publish available or expected crop | T-024 |
+| PATCH | /api/v1/crops/:id/status | farmer | Pause or reopen crop listing | T-024 |
+| POST | /api/v1/crops/:id/orders | buyer | Place direct purchase request | T-024 |
+| GET | /api/v1/crops/orders/mine | authenticated | List direct crop orders | T-024 |
+| PATCH | /api/v1/crops/orders/:id/status | farmer | Accept or reject purchase request | T-024 |
+| GET | /api/v1/contracts/:id/pdf | contract party | Download contract PDF | T-020 |
+| GET | /api/v1/offers/mine | authenticated | List current user's offers | T-016 |
+| GET | /api/v1/listings/:id/offers | buyer owner | List offers on a requirement | T-016 |
 
 ## 8. Frontend Registry (pages/routes as built)
 
@@ -172,6 +210,19 @@ Planned models: User (role farmer|buyer), RequirementListing, Offer, Negotiation
 | `/register` | `client/src/pages/RegisterPage.jsx` | public | User signup with role selector (Farmer/Buyer) and role-specific fields | T-006, T-007 |
 | `/farmer/dashboard` | `client/src/pages/FarmerDashboard.jsx` | farmer | Farmer personal dashboard | T-006, T-007 |
 | `/buyer/dashboard` | `client/src/pages/BuyerDashboard.jsx` | buyer | Buyer personal dashboard | T-006, T-007 |
+| `/listings` | `client/src/pages/ListingsPage.jsx` | farmer/buyer | Search and browse open requirements | T-012 |
+| `/buyer/listings/new` | `client/src/pages/NewListingPage.jsx` | buyer | Publish a requirement | T-011 |
+| `/buyer/listings` | `client/src/pages/MyListingsPage.jsx` | buyer | Manage published requirements | T-011 |
+| `/contracts` | `client/src/pages/ContractsPage.jsx` | farmer/buyer | List contracts | T-021 |
+| `/contracts/:id` | `client/src/pages/ContractDetailPage.jsx` | farmer/buyer | Confirm and download contract | T-021 |
+| `/offers` | `client/src/pages/OffersPage.jsx` | farmer/buyer | List negotiation threads | T-016 |
+| `/offers/:id` | `client/src/pages/NegotiationPage.jsx` | farmer/buyer | Polling negotiation thread | T-016 |
+| `/buyer/listings/:id/offers` | `client/src/pages/ListingOffersPage.jsx` | buyer | Compare offers on a listing | T-016 |
+| `/crops` | `client/src/pages/CropMarketplacePage.jsx` | farmer/buyer | Browse direct farmer crops | T-024 |
+| `/crops/:id` | `client/src/pages/CropDetailPage.jsx` | buyer | Place direct crop purchase request | T-024 |
+| `/farmer/crops/new` | `client/src/pages/CreateCropListingPage.jsx` | farmer | Publish a crop listing | T-024 |
+| `/farmer/crops` | `client/src/pages/CropOrdersPage.jsx` | farmer | Review purchase requests | T-024 |
+| `/buyer/orders` | `client/src/pages/CropOrdersPage.jsx` | buyer | Review direct crop purchases | T-024 |
 
 ## 9. Environment Variables
 
@@ -212,6 +263,10 @@ Planned models: User (role farmer|buyer), RequirementListing, Offer, Negotiation
 
 | Date | Task | Summary |
 |---|---|---|
+| 2026-10-27 | T-023 | Completed all 23 planned tasks: negotiation and contract UI, PDF export, API flow test, idempotent demo seed, login rate limiting, and root documentation. |
+| 2026-10-27 | T-024 | Added direct crop marketplace for available/expected farmer crops with buyer purchase requests and farmer decisions. |
+| 2026-10-27 | T-020 fix | Corrected ownership checks for populated contract party references so authorized PDF downloads return the file instead of 403. |
+| 2026-10-27 | T-015 | Added listing, offer, negotiation, and contract APIs plus protected marketplace/listing/contract frontend pages. Client lint/build pass; server tests could not complete because MongoMemoryServer binary download lock failed in the environment. |
 | 2026-10-27 | T-008 | Built RequirementListing Mongoose model with validation, future dates, remainingQuantity tracking, indexes, and Jest unit test suite. |
 | 2026-10-27 | T-007 | Built role-aware RegisterPage, LoginPage with 1-click quick demo buttons, Farmer and Buyer dashboards with metrics, and verified database seed script. |
 | 2026-10-27 | T-006 | Implemented frontend foundation with React Router, axios API client with Bearer header & 401 handling, AuthContext, ProtectedRoute with role checks, and role-aware floating pill navbar and Layout. |

@@ -5,6 +5,10 @@ import morgan from 'morgan'
 import { sendSuccess, sendError } from './utils/response.js'
 import authRoutes from './routes/auth.routes.js'
 import { authenticate, authorize } from './middleware/auth.js'
+import listingRoutes from './routes/listing.routes.js'
+import offerRoutes from './routes/offer.routes.js'
+import contractRoutes from './routes/contract.routes.js'
+import cropRoutes from './routes/crop.routes.js'
 
 const app = express()
 
@@ -28,6 +32,10 @@ app.get('/api/v1/health', (req, res) => {
 
 // Authentication API
 app.use('/api/v1/auth', authRoutes)
+app.use('/api/v1/listings', listingRoutes)
+app.use('/api/v1', offerRoutes)
+app.use('/api/v1/contracts', contractRoutes)
+app.use('/api/v1/crops', cropRoutes)
 
 // Role middleware verification endpoints
 app.get('/api/v1/test/farmer-only', authenticate, authorize('farmer'), (req, res) => {

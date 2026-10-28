@@ -8,10 +8,10 @@
 
 | Field | Value |
 |---|---|
-| Current task | T-009: Buyer listing API |
-| Last completed | T-008: Listing model |
-| Completed / Total | 8 / 23 |
-| Phase in progress | Phase 2: Buyer Requirement Listings |
+| Current task | Complete |
+| Last completed | T-024: Direct farmer crop marketplace |
+| Completed / Total | 24 / 24 |
+| Phase in progress | Complete |
 | Blocked tasks | none |
 
 > `client/` and `server/` folders verified with tooling, scripts, ESLint, and test suite.
@@ -100,22 +100,22 @@ server/tests/
   - Do: `RequirementListing` schema: `buyerId`, `crop`, `variety`, `quantity`, `unit`, `qualitySpec` (grade, moisture/notes), `priceTerms` (`pricePerUnit` or min/max), `deliveryLocation`, `deliveryDate` (or window), `paymentTerms` (text), `validTill`, `status` (`open` | `paused` | `closed` | `fulfilled`), timestamps. Indexes on crop, status, location.
   - Verify: model validation tests (positive quantity, future dates).
 
-- [ ] **T-009: Buyer listing API**
+- [x] **T-009: Buyer listing API**
   - Depends on: T-008
   - Do: buyer-only `POST /listings`, `PUT /listings/:id`, `PATCH /listings/:id/status` (pause/close), `GET /listings/mine`; only owner can modify; editing blocked once an offer is accepted.
   - Verify: farmer gets 403; buyer cannot edit another buyer's listing.
 
-- [ ] **T-010: Farmer browse and search API**
+- [x] **T-010: Farmer browse and search API**
   - Depends on: T-009
   - Do: `GET /listings` (any logged-in user; default `open` and not expired) with filters: crop, location, min/max price, quantity range, delivery date; pagination and sort (newest, price). `GET /listings/:id` detail.
   - Verify: filter combination and pagination tests; closed/expired listings hidden.
 
-- [ ] **T-011: Buyer listing UI**
+- [x] **T-011: Buyer listing UI**
   - Depends on: T-007, T-009
   - Do: create/edit listing form, "My Listings" page with status controls, listing detail page for buyer.
   - Verify: create, edit, pause, close flow works in UI.
 
-- [ ] **T-012: Farmer browse UI**
+- [x] **T-012: Farmer browse UI**
   - Depends on: T-007, T-010
   - Do: listings page with search and filters, listing cards, detail page with "Make Offer" button.
   - Verify: filters change results; detail loads from card.
@@ -124,22 +124,22 @@ server/tests/
 
 ## Phase 3: Offers and Negotiation
 
-- [ ] **T-013: Offer model and submit API**
+- [x] **T-013: Offer model and submit API**
   - Depends on: T-010
   - Do: `Offer` schema: `listingId`, `farmerId`, `buyerId`, `proposedPrice`, `quantity`, `deliveryDate`, `note`, `status` (`negotiating` | `accepted` | `rejected` | `withdrawn`), `lastProposalBy`, timestamps. Farmer-only `POST /listings/:id/offers`; one active offer per farmer per listing; quantity cannot exceed listing remaining quantity.
   - Verify: duplicate and over-quantity tests; buyer cannot submit offers.
 
-- [ ] **T-014: Negotiation (counter-proposal) API**
+- [x] **T-014: Negotiation (counter-proposal) API**
   - Depends on: T-013
   - Do: append-only `NegotiationEntry` (`offerId`, `senderId`, `senderRole`, `price`, `quantity`, `deliveryDate`, `message`, `timestamp`); `POST /offers/:id/counter` with turn-taking (a party cannot counter their own latest proposal); `GET /offers/:id/history`; access limited to the two parties. Entries cannot be edited or deleted.
   - Verify: turn-taking, immutability, and access-control tests.
 
-- [ ] **T-015: Accept, reject, withdraw**
+- [x] **T-015: Accept, reject, withdraw**
   - Depends on: T-014
   - Do: `POST /offers/:id/accept` (only the party who did NOT make the latest proposal), `/reject`, `/withdraw` (farmer). Accepting freezes the agreed terms (latest proposal) on the offer and reduces listing remaining quantity; listing becomes `fulfilled` when quantity is fully committed.
   - Verify: only the correct party can accept; terms snapshot equals latest proposal; quantity math tests.
 
-- [ ] **T-016: Offers and negotiation UI**
+- [x] **T-016: Offers and negotiation UI**
   - Depends on: T-011, T-012, T-015
   - Do: farmer "Make Offer" form and "My Offers" page; buyer "Offers on this listing" view with comparison table; shared negotiation thread page (history, counter form, Accept/Reject buttons shown only when allowed); simple polling every few seconds for updates.
   - Verify: two sessions (buyer and farmer) complete a negotiation to acceptance.
@@ -148,27 +148,27 @@ server/tests/
 
 ## Phase 4: Contract
 
-- [ ] **T-017: Contract model and generation**
+- [x] **T-017: Contract model and generation**
   - Depends on: T-015
   - Do: `Contract` schema: `contractNo` (unique, e.g. `AGP-2026-000123`), `offerId`, `listingId`, `farmerId`, `buyerId`, `terms` snapshot (crop, variety, quantity, unit, price, total amount, quality spec, delivery location/date, payment terms), `status` (`pending_confirmation` | `active` | `cancelled`), `confirmedBy` (farmer/buyer timestamps), `createdAt`. Auto-create when an offer is accepted.
   - Verify: contract terms equal accepted terms; `contractNo` unique; total = price x quantity.
 
-- [ ] **T-018: Contract confirmation and locking**
+- [x] **T-018: Contract confirmation and locking**
   - Depends on: T-017
   - Do: `POST /contracts/:id/confirm` for each party; when both have confirmed, status becomes `active` and terms become read-only (enforce in model hook/service); allow `cancel` only while `pending_confirmation`.
   - Verify: both-party confirmation required; edit attempt on active contract fails.
 
-- [ ] **T-019: Contract read APIs**
+- [x] **T-019: Contract read APIs**
   - Depends on: T-018
   - Do: `GET /contracts/mine` (role-aware), `GET /contracts/:id` (parties only).
   - Verify: non-party gets 403/404.
 
-- [ ] **T-020: Contract PDF export**
+- [x] **T-020: Contract PDF export**
   - Depends on: T-018
   - Do: `GET /contracts/:id/pdf` generating a clean PDF (contract number, parties, terms, confirmation timestamps); store SHA-256 of terms on the contract for integrity.
   - Verify: PDF downloads and matches contract data.
 
-- [ ] **T-021: Contract UI**
+- [x] **T-021: Contract UI**
   - Depends on: T-016, T-019, T-020
   - Do: "My Contracts" list for both roles, contract detail page with status badge and confirm button, PDF download; notification-style banner on dashboards when a contract awaits confirmation.
   - Verify: accepted offer then contract appears for both; both confirm then status becomes Active.
@@ -177,20 +177,31 @@ server/tests/
 
 ## Phase 5: Finish
 
-- [ ] **T-022: End-to-end test and demo seed**
+- [x] **T-022: End-to-end test and demo seed**
   - Depends on: T-021
   - Do: E2E test (Playwright or Cypress) for the full flow: register buyer and farmer, create listing, offer, counter, accept, confirm contract; `npm run seed:demo` with sample users and listings.
   - Verify: E2E passes; seed is idempotent.
 
-- [ ] **T-023: Hardening and docs**
+- [x] **T-023: Hardening and docs**
   - Depends on: T-022
   - Do: review every route for validation, role and ownership checks, rate limit login; README with setup/run steps and demo accounts; Swagger or Postman collection; final `MEMORY.md` cleanup. Tag `v1.0.0`.
   - Verify: fresh clone follows README and runs the full flow.
 
 ---
 
+## Post-release extension
+
+- [x] **T-024: Direct farmer crop marketplace**
+  - Depends on: T-023
+  - Do: farmers list available or expected crops; buyers browse and place direct purchase requests; farmers accept/reject requests; reserve and restore quantities safely.
+  - Verify: farmer crop listing, buyer direct order, farmer decision, role checks, and client build/lint.
+
 ## Progress Log
+2026-10-27 | T-024 | Added direct farmer crop marketplace with available/expected crop listings, buyer purchase requests, farmer accept/reject workflow, quantity reservation, role checks, and responsive UI.
 2026-10-27 | T-008 | Built RequirementListing Mongoose model with validation, future dates, remainingQuantity tracking, indexes, and Jest unit test suite.
+2026-10-27 | T-023 | Completed offer and contract UI, contract PDF export, API flow E2E coverage, idempotent demo seed, login rate limiting, and setup/API documentation.
+2026-10-27 | T-011/T-012 | Added buyer requirement creation/management and farmer marketplace browse/detail/offer screens with responsive accessible UI.
+2026-10-27 | T-015 | Added protected listing browse/management APIs, offer submission and append-only counter-proposals, turn-taking decisions, quantity accounting, and automatic contract creation.
 2026-10-27 | T-007 | Created role-aware RegisterPage, LoginPage with 1-click demo logins, FarmerDashboard and BuyerDashboard with statistics and action links, and idempotent database seed script.
 2026-10-27 | T-006 | Implemented frontend foundation with React Router, axios API client with Bearer header & 401 handling, AuthContext, ProtectedRoute with role checks, and role-aware floating pill navbar and Layout.
 2026-10-27 | T-005 | Built JWT authenticate and role-based authorize('farmer'|'buyer') middleware with isOwner helper and verified 401/403 access control with Supertest.

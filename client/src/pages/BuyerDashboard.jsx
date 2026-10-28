@@ -34,6 +34,7 @@ export default function BuyerDashboard() {
             >
               <FileText className="w-4 h-4" /> My Requirements
             </Link>
+            <Link to="/crops" className="bg-emerald-800/80 hover:bg-emerald-800 text-white border border-emerald-600/50 px-5 py-2.5 rounded-full text-sm font-medium transition-colors flex items-center gap-1.5">Buy Farmer Crops</Link>
           </div>
         </div>
       </div>

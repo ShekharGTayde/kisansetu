@@ -9,6 +9,7 @@
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
     "seed": "node src/utils/seed.js",
+    "seed:demo": "node src/utils/seed.js",
     "lint": "eslint .",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand --detectOpenHandles"
   },

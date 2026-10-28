@@ -82,6 +82,16 @@ export default function Navbar() {
               >
                 My Contracts
               </Link>
+              <Link
+                to="/offers"
+                className={`hover:text-[#1b3b22] transition-colors ${
+                  isActive('/offers') ? 'text-[#1b3b22] font-semibold' : ''
+                }`}
+              >
+                Offers
+              </Link>
+              <Link to="/farmer/crops" className={`hover:text-[#1b3b22] transition-colors ${isActive('/farmer/crops') ? 'text-[#1b3b22] font-semibold' : ''}`}>My Crop Orders</Link>
+              <Link to="/farmer/crops/new" className={`hover:text-[#1b3b22] transition-colors ${isActive('/farmer/crops/new') ? 'text-[#1b3b22] font-semibold' : ''}`}>List Crop</Link>
             </>
           )}
 
@@ -119,6 +129,16 @@ export default function Navbar() {
               >
                 Contracts
               </Link>
+              <Link
+                to="/offers"
+                className={`hover:text-[#1b3b22] transition-colors ${
+                  isActive('/offers') ? 'text-[#1b3b22] font-semibold' : ''
+                }`}
+              >
+                Offers
+              </Link>
+              <Link to="/crops" className={`hover:text-[#1b3b22] transition-colors ${isActive('/crops') ? 'text-[#1b3b22] font-semibold' : ''}`}>Buy Crops</Link>
+              <Link to="/buyer/orders" className={`hover:text-[#1b3b22] transition-colors ${isActive('/buyer/orders') ? 'text-[#1b3b22] font-semibold' : ''}`}>My Crop Orders</Link>
             </>
           )}
 

@@ -1,6 +1,7 @@
 import dotenv from 'dotenv'
 import mongoose from 'mongoose'
 import User from '../models/User.js'
+import RequirementListing from '../models/RequirementListing.js'
 import { connectDB, disconnectDB } from '../config/db.js'
 
 dotenv.config()
@@ -42,6 +43,29 @@ export const seedDatabase = async () => {
         businessName: 'ITC Agri-Business Division',
       })
       console.log('✅ Demo buyer created: buyer@itcagri.com / Buyer@123')
+    }
+
+    const buyer = await User.findOne({ email: 'buyer@itcagri.com' })
+    const existingListing = await RequirementListing.findOne({ buyerId: buyer._id, crop: 'Wheat (Sharbati)' })
+    if (!existingListing) {
+      const deliveryDate = new Date()
+      deliveryDate.setDate(deliveryDate.getDate() + 60)
+      const validTill = new Date()
+      validTill.setDate(validTill.getDate() + 30)
+      await RequirementListing.create({
+        buyerId: buyer._id,
+        crop: 'Wheat (Sharbati)',
+        variety: 'Sharbati',
+        quantity: 500,
+        unit: 'quintal',
+        qualitySpec: { grade: 'Grade A', moistureMax: '12%' },
+        priceTerms: { pricePerUnit: 325000 },
+        deliveryLocation: 'Sehore, Madhya Pradesh',
+        deliveryDate,
+        paymentTerms: '30% advance, balance on delivery',
+        validTill,
+      })
+      console.log('✅ Demo wheat requirement created')
     }
 
     console.log('🌱 Seed completed successfully.')

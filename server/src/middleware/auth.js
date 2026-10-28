@@ -51,5 +51,7 @@ export const authorize = (...allowedRoles) => {
  */
 export const isOwner = (resourceOwnerId, reqUserId) => {
   if (!resourceOwnerId || !reqUserId) return false
-  return resourceOwnerId.toString() === reqUserId.toString()
+  const ownerId = resourceOwnerId._id || resourceOwnerId
+  const userId = reqUserId._id || reqUserId
+  return ownerId.toString() === userId.toString()
 }

@@ -3,11 +3,12 @@ import { register, login, getMe, logout } from '../controllers/auth.controller.j
 import { validateBody } from '../middleware/validate.js'
 import { authenticate } from '../middleware/auth.js'
 import { registerSchema, loginSchema } from '../validators/auth.validator.js'
+import { loginRateLimit } from '../middleware/rateLimit.js'
 
 const router = Router()
 
 router.post('/register', validateBody(registerSchema), register)
-router.post('/login', validateBody(loginSchema), login)
+router.post('/login', loginRateLimit, validateBody(loginSchema), login)
 router.get('/me', authenticate, getMe)
 router.post('/logout', logout)
 
